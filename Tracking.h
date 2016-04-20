@@ -5,6 +5,8 @@
 #include<windows.h>
 
 void recognition_button(void);
+bool keeplastpoint(int ,int,char);
+bool keeplastpoint(int a, int b, char c);
 
 void histogram() {
 
@@ -12,6 +14,7 @@ void histogram() {
 	int temp_py = P1.y; // 測試用
 
 	bool isGetTrackingROI = false;
+	char thumbpoint = 0;
 	bool is_handmodel_pre_percent = true;
 	IplImage * once_temp;
 
@@ -807,7 +810,7 @@ void histogram() {
 				Px = m;
 				Py = n;
 
-				isGetTrackingROI = true;
+				//isGetTrackingROI = true;
 
 				int temp_P2x = Px + ROI_width < width_m ? Px + ROI_width : width_m;
 				int temp_P2y = Py + ROI_height < height_m ? Py + ROI_height : height_m;
@@ -858,6 +861,10 @@ void histogram() {
 				// 暫存下 目前 最新最佳 的 最高尖點
 				temp_topOfTheHandModel_update_x = topOfTheHandModel_new_x;
 				temp_topOfTheHandModel_update_y = topOfTheHandModel_new_y;
+
+				thumbpoint = 0;
+				keeplastpoints(topOfTheHandModel_new_x, topOfTheHandModel_new_y, thumbpoint);
+
 				// ======================================================================================================
 
 				//// ================================== 顯示 追蹤後選者 ====================================================
@@ -1311,4 +1318,41 @@ void recognition_button() {
 	else if (0)
 		cout << "you got nothing" << endl;
 
+}
+void keeplastpoints(void){
+	int point = 10;
+	int pointtemp = 0;
+	int startpoint = 2;
+	int countfeature = 0;
+	bool thumb = false;
+	for (int i = startpoint; i < g_Point.size(); i++)
+	{
+		int p1x = 0;
+		int p1y = 0;
+		int p2x = 0;
+		int p2y = 0;
+
+
+		if (i < point){
+			pointtemp = i - (point - 1);
+		}
+		else{
+			pointtemp = point;
+		}
+
+		for (int j = 0; j < pointtemp - startpoint; j++)
+		{
+			if (abs(g_Point[i - ((pointtemp - startpoint) - j)].x - p1x) < 2 && abs(g_Point[i - ((pointtemp - startpoint) - j)].y - p1y) < 2)
+				countfeature++;
+			else
+				countfeature--;
+
+			
+		}
+
+		if (countfeature > 8)
+			thumb = true;
+
+
+	}//for (int i = startpoint; i < g_Point.size(); i++)
 }
