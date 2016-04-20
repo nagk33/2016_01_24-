@@ -5,8 +5,8 @@
 #include<windows.h>
 
 void recognition_button(void);
-bool keeplastpoint(int ,int,char);
-bool keeplastpoint(int a, int b, char c);
+
+bool keeplastpoints(int p1x, int p1y, bool thumb);
 
 void histogram() {
 
@@ -14,7 +14,7 @@ void histogram() {
 	int temp_py = P1.y; // 測試用
 
 	bool isGetTrackingROI = false;
-	char thumbpoint = 0;
+	bool thumbcheck = false;
 	bool is_handmodel_pre_percent = true;
 	IplImage * once_temp;
 
@@ -810,7 +810,7 @@ void histogram() {
 				Px = m;
 				Py = n;
 
-				//isGetTrackingROI = true;
+				isGetTrackingROI = true;
 
 				int temp_P2x = Px + ROI_width < width_m ? Px + ROI_width : width_m;
 				int temp_P2y = Py + ROI_height < height_m ? Py + ROI_height : height_m;
@@ -862,8 +862,8 @@ void histogram() {
 				temp_topOfTheHandModel_update_x = topOfTheHandModel_new_x;
 				temp_topOfTheHandModel_update_y = topOfTheHandModel_new_y;
 
-				thumbpoint = 0;
-				keeplastpoints(topOfTheHandModel_new_x, topOfTheHandModel_new_y, thumbpoint);
+			
+				thumbcheck = keeplastpoints(topOfTheHandModel_new_x, topOfTheHandModel_new_y, thumbcheck);
 
 				// ======================================================================================================
 
@@ -1147,11 +1147,11 @@ void histogram() {
 	// ==================== 掃描 是否出現 大拇哥 ==========================
 	bool isFindClick = false; // 是否發現 大拇哥
 
-	if (isGetTrackingROI) { /// 出現新的候選ROI 才進行 虛實筆 辨識
+	if (thumbcheck) { /// 出現新的候選ROI 才進行 虛實筆 辨識
 		
 		int threshold = 0;
 
-		int scan_line = temp_topOfTheHandModel_update_x + (ROI_width * 3) / 5; // 選擇 ROI 三分之一 的位置 作為掃描手指的切線
+		int scan_line = temp_topOfTheHandModel_update_x - (ROI_width * 3) / 5; // 選擇 ROI 三分之一 的位置 作為掃描手指的切線
 
 		scan_line = scan_line >= 0 ? scan_line : 0;
 		scan_line = scan_line < width_m ? scan_line : width_m - 1;
@@ -1319,7 +1319,7 @@ void recognition_button() {
 		cout << "you got nothing" << endl;
 
 }
-void keeplastpoints(void){
+bool keeplastpoints(int a  , int b ,bool c){  //2016/4/21
 	int point = 10;
 	int pointtemp = 0;
 	int startpoint = 2;
@@ -1344,15 +1344,18 @@ void keeplastpoints(void){
 		{
 			if (abs(g_Point[i - ((pointtemp - startpoint) - j)].x - p1x) < 2 && abs(g_Point[i - ((pointtemp - startpoint) - j)].y - p1y) < 2)
 				countfeature++;
-			else
+			/*else
 				countfeature--;
-
+*/
 			
 		}
 
 		if (countfeature > 8)
-			thumb = true;
+			bool thumb = true;
 
+		else
+			thumb = false;
 
+		return thumb;
 	}//for (int i = startpoint; i < g_Point.size(); i++)
 }
