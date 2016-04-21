@@ -863,7 +863,7 @@ void histogram() {
 				temp_topOfTheHandModel_update_y = topOfTheHandModel_new_y;
 
 			
-				thumbcheck = keeplastpoints(topOfTheHandModel_new_x, topOfTheHandModel_new_y, thumbcheck);
+				
 
 				// ======================================================================================================
 
@@ -947,6 +947,8 @@ void histogram() {
 
 	} // for m*n
 
+
+	
 	// cout << "all_HOG:" << all_HOG / all_HOG_count << endl;
 
 	// cvWaitKey(0); /// =================== 顯示 追蹤後選者 ====================
@@ -963,6 +965,7 @@ void histogram() {
 			
 			Px = (Px + P1.x) / 2;
 			Py = (Py + P1.y) / 2;
+			thumbcheck = keeplastpoints(Px, Py, thumbcheck);
 			/*P2.x = Px + (P2_x - P1_x);
 			P2.y = Py + (P2_y - P1_y);*/
 
